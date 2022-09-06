@@ -1,5 +1,5 @@
 import { Fragment, useContext } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
 import {
   NavigationContainer,
@@ -18,6 +18,17 @@ const Navigation = () => {
   const { currentUser } = useContext(UserContext);
   const { isCartOpen } = useContext(CartContext);
 
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    try {
+      await signOutUser();
+      navigate("/auth");
+    } catch (error) {
+      alert("Error signing out");
+    }
+  };
+
   return (
     <Fragment>
       <NavigationContainer>
@@ -27,7 +38,7 @@ const Navigation = () => {
         <NavLinks>
           <NavLink to="/shop">SHOP</NavLink>
           {currentUser ? (
-            <NavLink as='span' onClick={signOutUser}>
+            <NavLink as="span" onClick={handleSignOut}>
               SIGN OUT
             </NavLink>
           ) : (

@@ -1,7 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import FormInput from "../form-input/form-input.component";
-import Button, {BUTTON_TYPES_CLASSES} from "../button/button.component";
+import Button, { BUTTON_TYPES_CLASSES } from "../button/button.component";
 
 import {
   signInWithGooglePopup,
@@ -19,13 +20,19 @@ const SignInForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
 
+  const navigate = useNavigate();
+
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
   };
 
   const signInWithGoogle = async () => {
-    await signInWithGooglePopup();
-    
+    try {
+      await signInWithGooglePopup();
+      navigate("/");
+    } catch (error) {
+      alert("Error logging in with Google");
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -36,6 +43,7 @@ const SignInForm = () => {
         email,
         password
       );
+      navigate("/");
       resetFormFields();
     } catch (error) {
       switch (error.code) {
@@ -81,7 +89,11 @@ const SignInForm = () => {
         />
         <div className="buttons-container">
           <Button type="submit">Sign In</Button>
-          <Button type="button" buttonType={BUTTON_TYPES_CLASSES.google} onClick={signInWithGoogle}>
+          <Button
+            type="button"
+            buttonType={BUTTON_TYPES_CLASSES.google}
+            onClick={signInWithGoogle}
+          >
             Google sign in
           </Button>
         </div>
